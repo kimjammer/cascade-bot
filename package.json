@@ -1,0 +1,21 @@
+{
+  "name": "cascade-bot",
+  "version": "1.0.0",
+  "description": "A Discord bot that runs the text-based game Cascade",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kimjammer/cascade-bot.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Bot"
+  ],
+  "author": "KimJammer",
+  "license": "GPLv3",
+  "dependencies": {
+    "discord.js": "^12.3.1"
+  }
+}
