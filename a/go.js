@@ -2,7 +2,7 @@ module.exports = {
 	name: 'go',
 	aliases: ["move","travel"],
 	description: 'Moves your character',
-	usage: `?go [direction]`,
+	usage: `go [direction]`,
 	possibleDescriptors:[
 		{
 			names: ["up","north","forward","forwards"],
@@ -40,6 +40,11 @@ module.exports = {
 
 		//If the descriptor object has meaningful information, which it will if the argument was a valid descriptor
 		if (descriptorObj) {
+			//If the player is in combat, don't let them move.
+			if (gameData.inCombat) {
+				message.channel.send("You cannot move while in Combat!");
+				return;
+			}
 
 			[targetx,targety] = descriptorObj.setTargetCoord(gameData);//Destructuring
 
@@ -63,6 +68,30 @@ module.exports = {
 					gameData.ypos = 0;
 
 					reply.push(client.levelDialogue[`${gameData.level}`][gameData.xpos][gameData.ypos]);
+
+					//After arriving in new level,we set checkpointGameData to their current gameData - except for the old checkpointGameData. We clear that.
+					gameData.checkpointGameData = "";
+					//We store the object as text because it will not create a circular loop, and any links are broken.
+					gameData.checkpointGameData = JSON.stringify(gameData);
+				}
+
+				//If the player is in a space with a mob, tell them to initiate the fight and put them in Combat mode.
+				if (client.levelMap[`${gameData.level}`][gameData.xpos][gameData.ypos] == 4) {
+					let mobs = client.levelMobs[`${gameData.level}`][gameData.xpos][gameData.ypos] //This is an array with all the mobs in the current space.
+
+					//Put the player in Combat mode. (They cant move, only fight)
+					gameData.inCombat = true;
+
+					//Tell the player about each mob they must fight.
+					for (let i = 0; i < mobs.length; i++) {
+						reply.push(`There is a ${mobs[i].name} where you are! Use \`${client.prefix}attack\` to start the fight. (You must fight the mob)`);
+					}
+
+				}
+
+				//If the player has reached the end of the game, wrap it all up.
+				if (client.levelMap[`${gameData.level}`][gameData.xpos][gameData.ypos] == 3) {
+					reply.push("You have finished Cascade. Thank you for playing Cascade.");
 				}
 
 				client.setGameData.run(

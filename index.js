@@ -11,7 +11,7 @@ const Database = require('better-sqlite3');
 const db = new Database("Database.sqlite");
 
 const {token} = require('./config.json');
-const prefix = "!";
+client.prefix = "!";
 
 //Creates map with all commands
 client.commands = new Discord.Collection();
@@ -49,9 +49,9 @@ client.on('ready', () => {
 
 //Do something when message is sent
 client.on('message',message => {
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
+	if (!message.content.startsWith(client.prefix) || message.author.bot) return;
 
-	let msgContents = message.content.slice(prefix.length).split(/ +/);
+	let msgContents = message.content.slice(client.prefix.length).split(/ +/);
 	let commandName = msgContents.shift().toLowerCase();
 	let command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 	let args = msgContents.map(element => {return element.toLowerCase();});
@@ -81,13 +81,13 @@ client.on('message',message => {
 			try {
 				command.execute(message,args,client)
 			}catch (e) {
-				console.log(err);
+				console.log(e);
 				reply = 'Something went wrong. :('
 				message.channel.send(reply);
 			}
 			return;
 		}else {
-			message.channel.send(`You don't have a game! Create one with \`${prefix}start\``);
+			message.channel.send(`You don't have a game! Create one with \`${client.prefix}start\``);
 			return;
 		}
 	}
@@ -111,13 +111,13 @@ x
 x
 x
 x
-0=invalid space; 1=valid space; 2=move to next level; 3=End of Game.
+0=invalid space; 1=valid space; 2=move to next level; 3=End of Game; 4=Mob in space.
  */
 client.levelMap = {
 	1: [[1,1,1,0],
 		[0,1,0,0],
 		[1,1,1,2]],
-	2: [[1,1,1],
+	2: [[1,4,1],
 		[1,1,1]]
 }
 
@@ -125,8 +125,18 @@ client.levelDialogue = {
 	1: [["Welcome to the world of Cascade, you are in a dark, stone hallway with a path way to your front.","The hallway continues straight forward, but there is also a way to your right.","You have come to a dead end. You can go backwards, and that is it.","Invalid Space"],
 		["Invalid Space","The hallway continues to your right.","Invalid Space","Invalid Space"],
 		["Another dead end.","You exit the hallway. You can go north or south","The staircase down is just ahead! It is dully lit up with a single torch.","You head down the stair case to the next level of the dungeon."]],
-	2: [["You are in an open room.",1,1],
+	2: [["You are in an open room.","You stumble across a big spider. Fight!",1],
 		[1,1,1]]
+}
+
+//Levels can have mobs, and they are organized like this: 0=no Mob &
+//[{name:"Mob1",hp:AmountOfHealth,atk:[LowEndAttack,HighEndAttack],dfs:[Chance at Defense,lowEndDefense,highEndDefense],atkName:[Names for attacks], dfsName:[Names for Defenses],loot:[{Standard Item Object. (Ex in start.js giving first weapon to player.)}]},["name":"Mob2"]]
+client.levelMobs = {
+	1: [[0,0,0,0],
+		[0,0,0,0],
+		[0,0,0,0]],
+	2: [[0,[{name:"Big Spider",hp:15,atk:[1,5],dfs:[30,10,15],atkName:["slashes","pounces"],dfsName:["dodges","jumps"],loot:[{name:"Steel Sword",description:"A nice, shiny steel sword. Powerful and sharp.",type:"weapon", equipped:"0",atk:[8,9]},{name:"xp",type:"xp",xpAmount:20}]}],0],
+		[0,0,0]]
 }
 
 client.login(token);

@@ -2,7 +2,7 @@ module.exports = {
 	name: 'start',
 	aliases: ["begin","travel"],
 	description: 'Creates a game for those who don\'t have an existing game',
-	usage: `?start`,
+	usage: `start`,
 	possibleDescriptors:[
 		{
 			names: []
@@ -18,8 +18,13 @@ module.exports = {
 			level: 1,
 			xpos: 0,
 			ypos: 0,
-			inventory: {},
-			health: 100
+			inventory: [{name:"Old Sword",description:"An old sword you got for free on the side of the road." ,type:"weapon", equipped:"weapon",atk:[6,7],atkName:["slash across","stab"]}],//Equippped is like saying equipped as. It shows what "slot" its equipped in, if any. 0 if not equipped
+			health: 100,
+			inCombat: false,
+			combatSituation: {},
+			xp:0,
+			xpLevel:1,
+			checkpointGameData:"" //This stringyfied object holds the entire saveData, from the beginning of their level. If they die, they get reset to this.
 		};//LocationId is like guild.id but since the game can be played in DM channels, it can be a DM channel ID too.
 
 		saveData.playerId = message.author.id;
@@ -36,8 +41,13 @@ module.exports = {
 			return
 		};
 
+
 		//If user doesn't have a game in current location, make one.
 		if(!client.getGameData.get(message.author.id,saveData.locationId)) {
+			//Before we create the database entry, set checkpointGameData to the default saveData. We clear checkpointGameData, so its contents don't get copied into the new one.
+			saveData.checkpointGameData = {};
+			saveData.checkpointGameData = JSON.stringify(saveData);
+
 			client.createGameData.run(
 				{
 					id: saveData.locationId - message.author.id,
