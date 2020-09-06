@@ -135,7 +135,7 @@ client.levelMobs = {
 	1: [[0,0,0,0],
 		[0,0,0,0],
 		[0,0,0,0]],
-	2: [[0,[{name:"Big Spider",hp:15,atk:[1,5],dfs:[30,10,15],atkName:["slashes","pounces"],dfsName:["dodges","jumps"],loot:[{name:"Steel Sword",description:"A nice, shiny steel sword. Powerful and sharp.",type:"weapon", equipped:"0",atk:[8,9]},{name:"xp",type:"xp",xpAmount:20}]}],0],
+	2: [[0,[{name:"Big Spider",hp:15,atk:[1,5],dfs:[10,2,4],atkName:["slashes","pounces"],dfsName:["dodges","jumps"],loot:[{name:"Steel Sword",description:"A nice, shiny steel sword. Powerful and sharp.",type:"weapon", equipped:"0",atk:[8,9]},{name:"xp",type:"xp",xpAmount:20}]}],0],
 		[0,0,0]]
 }
 

@@ -34,6 +34,7 @@ module.exports = {
 		let mobIndex;
 		let equippedWeapon;
 		let atkDamage;
+		let dfsDamage;
 
 
 		//Function for getting random Integers. Used later. Outputs from min-max, both inclusive. Inputting 1,3 will give 1, 2, or 3
@@ -81,11 +82,28 @@ module.exports = {
 		//Get player's currently equipped weapon
 		equippedWeapon = gameData.inventory.filter(weapon => weapon.equipped == "weapon")[0]
 
-		//player attacks. (mobIndex-1 because player puts in a number where 1 is first mob, 2 is second, but arrays start at 0)
-		atkDamage = getRndInteger(equippedWeapon.atk[0],equippedWeapon.atk[1]);
-		mobs[mobIndex-1].hp -= atkDamage;
-		//Announce Player Attack
-		reply.push(`You ${equippedWeapon.atkName[getRndInteger(0,equippedWeapon.atkName.length - 1)]} the ${mobs[mobIndex-1].name}! It lost ${atkDamage} hp!`);
+		//See if mob succeeds in defending the attack
+		if (mobs[mobIndex-1].dfs[0] >= getRndInteger(1,100)) {
+			//If yes, take less damage.
+			dfsDamage = getRndInteger(mobs[mobIndex-1].dfs[1],mobs[mobIndex-1].dfs[2])
+			//player attacks. (mobIndex-1 because player puts in a number where 1 is first mob, 2 is second, but arrays start at 0)
+			atkDamage = getRndInteger(equippedWeapon.atk[0],equippedWeapon.atk[1])-dfsDamage;
+			if (atkDamage < 0) {
+				//If the mob defends more hp than player attacked, set atkDamage to 0 instead of a negative number
+				atkDamage = 0;
+			}
+			mobs[mobIndex-1].hp -= atkDamage;
+			//Announce Player Attack
+			reply.push(`You ${equippedWeapon.atkName[getRndInteger(0,equippedWeapon.atkName.length - 1)]} the ${mobs[mobIndex-1].name} but it ${mobs[mobIndex-1].dfsName[getRndInteger(0,mobs[mobIndex-1].dfsName.length-1)]}! It lost ${atkDamage} hp!`);
+
+		}else {
+			//player attacks. (mobIndex-1 because player puts in a number where 1 is first mob, 2 is second, but arrays start at 0)
+			atkDamage = getRndInteger(equippedWeapon.atk[0],equippedWeapon.atk[1]);
+			mobs[mobIndex-1].hp -= atkDamage;
+			//Announce Player Attack
+			reply.push(`You ${equippedWeapon.atkName[getRndInteger(0,equippedWeapon.atkName.length - 1)]} the ${mobs[mobIndex-1].name}! It lost ${atkDamage} hp!`);
+		}
+
 
 		//If mob dies delete it from the array and move it to deadMobs array
 		if (mobs[mobIndex-1].hp <= 0) {
@@ -133,7 +151,7 @@ module.exports = {
 				//Add second part to last element of the replies array (the first part of telling the experience gathered.)
 				reply[reply.length-1] += `and went up ${xpLevelsGained} levels!`;
 				message.channel.send(reply);
-
+				return;
 			}
 		}
 
