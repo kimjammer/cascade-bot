@@ -34,6 +34,9 @@ module.exports = {
 		let descriptorObj = null;
 		let targetx = 0;
 		let targety = 0;
+		let interactables = [];
+		let door;
+		let signalSender;
 
 		//Find the descriptor object by matching it to a possible alias
 		descriptorObj = this.possibleDescriptors.find(dscrpt => dscrpt.names.includes(args[0]));
@@ -51,9 +54,36 @@ module.exports = {
 			//Coordinates go [x][y]
 			if (targetx >= 0 && targety >= 0 && targetx < client.levelMap[`${gameData.level}`].length && targety <client.levelMap[`${gameData.level}`][targetx].length && client.levelMap[`${gameData.level}`][targetx][targety] !== 0) { //1 means valid location, 0 means not valid.
 				/*
-				Here we get the level # from gameData and turn it into a string using template literals. Then, we get
+				Up there, we get the level # from gameData and turn it into a string using template literals. Then, we get
 				the value of the x and y coordinates the player wants to move to.
 				*/
+
+				//Check if there is an interactable(s) in their target space (locked door, or button to press)
+				if (client.levelMap[`${gameData.level}`][targetx][targety] == 5) {
+					//Make reply an array so we can use reply.push()
+					reply = [];
+
+					interactables = client.levelInteractable[`${gameData.level}`][targetx][targety]
+
+					//Check if there is something that blocks them (door)
+					door = interactables.find(element => element.type == "door");
+					if (door){
+						//Check if it is open (or can be opened)
+						if (gameData.triggeredSignals.find(signal => signal == door.id)) {
+							reply.push(`You pass through the ${door.name}.`);
+						}else {
+							reply.push(`There is a(n) ${door.name} in your way.`);
+							message.channel.send(reply);
+							return;
+						}
+					}
+
+					//Check if there is something that sends a signal (button, lever, etc)
+					signalSender = interactables.find(element => element.type == "signalSender")
+					if (signalSender){
+						//Do nothing - It is handled by other code.
+					}
+				}
 
 				gameData.xpos = targetx;
 				gameData.ypos = targety;

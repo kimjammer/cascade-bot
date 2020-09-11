@@ -22,6 +22,7 @@ module.exports = {
 			health: 100,
 			inCombat: false,
 			combatSituation: {},
+			triggeredSignals: [],//This is all of the things the player has activated like a button. EX: locked door:looks if signal for opening door has been triggered and is in here.
 			xp:0,
 			xpLevel:1,
 			checkpointGameData:"" //This stringyfied object holds the entire saveData, from the beginning of their level. If they die, they get reset to this.
