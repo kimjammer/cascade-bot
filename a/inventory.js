@@ -1,8 +1,9 @@
 module.exports = {
 	name: 'inventory',
-	aliases: ["items","stuff"],
+	aliases: ["items","stuff","inv"],
 	description: 'Shows what you have.',
-	usage: `inventory [optional:Item to get specific info on]`,
+	usage: `inventory [optional: Item to get specific info on]`,
+	category:"General",
 	possibleDescriptors:[],
 	execute(message,args,client,gameData) {
 		let reply =[];

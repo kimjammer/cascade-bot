@@ -3,6 +3,7 @@ module.exports = {
 	aliases: ["move","travel"],
 	description: 'Moves your character',
 	usage: `go [direction]`,
+	category:"General",
 	possibleDescriptors:[
 		{
 			names: ["up","north","forward","forwards"],

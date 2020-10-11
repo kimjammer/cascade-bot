@@ -3,6 +3,7 @@ module.exports = {
 	aliases: ["begin","travel"],
 	description: 'Creates a game for those who don\'t have an existing game',
 	usage: `start`,
+	category:"General",
 	possibleDescriptors:[
 		{
 			names: []
@@ -23,6 +24,7 @@ module.exports = {
 			inCombat: false,
 			combatSituation: {},
 			triggeredSignals: [],//This is all of the things the player has activated like a button. EX: locked door:looks if signal for opening door has been triggered and is in here.
+			usedItemBoxes:[],//List of all chests, etc that the player has already opened.
 			xp:0,
 			xpLevel:1,
 			checkpointGameData:"" //This stringyfied object holds the entire saveData, from the beginning of their level. If they die, they get reset to this.

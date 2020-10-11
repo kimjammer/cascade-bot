@@ -3,6 +3,7 @@ module.exports = {
 	aliases: ["see","examine"],
 	description: 'Look around. (Get the dialogue again)',
 	usage: `look`,
+	category:"General",
 	possibleDescriptors:[],
 	execute(message,args,client,gameData) {
 		let reply ="";

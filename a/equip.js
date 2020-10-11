@@ -3,9 +3,9 @@ module.exports = {
 	aliases: ["wear","hold"],
 	description: 'Equip a specific weapon or other item.',
 	usage: `equip [item name]`,
+	category:"Combat",
 	possibleDescriptors:[],
 	execute(message,args,client,gameData) {
-		let reply =[];
 		let itemName = "";
 		let item;
 		let previousEquippedItem;

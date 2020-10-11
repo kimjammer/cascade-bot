@@ -3,6 +3,7 @@ module.exports = {
 	aliases: ["atk","slash"],
 	description: 'Attacks a mob',
 	usage: `attack [optional:Mob Number]`,
+	category:"Combat",
 	possibleDescriptors:[
 		{
 			names: ["1","one","first"],
